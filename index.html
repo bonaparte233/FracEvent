@@ -1,0 +1,912 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FracEvent: event-camera simulation via fractional-relaxation pixel dynamics.">
+  <meta property="og:title" content="FracEvent">
+  <meta property="og:description" content="Event-camera simulation via fractional-relaxation pixel dynamics.">
+  <meta property="og:image" content="assets/overview.png">
+  <title>FracEvent</title>
+  <style>
+    :root {
+      --paper: #f6f8f5;
+      --panel: #ffffff;
+      --ink: #101817;
+      --muted: #5f6d69;
+      --line: #d9e3de;
+      --teal: #087c78;
+      --teal-dark: #075c5b;
+      --blue: #2f62d6;
+      --orange: #e85d2a;
+      --gold: #b98222;
+      --code: #111917;
+      --shadow: 0 18px 50px rgba(25, 43, 38, 0.10);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(8, 124, 120, 0.045) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(8, 124, 120, 0.035) 1px, transparent 1px),
+        var(--paper);
+      background-size: 44px 44px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.58;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a:hover { text-decoration: underline; }
+    img { max-width: 100%; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(217, 227, 222, 0.85);
+      background: rgba(246, 248, 245, 0.92);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav-inner {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      font-weight: 800;
+      color: var(--teal-dark);
+      letter-spacing: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .hero {
+      position: relative;
+      width: 100%;
+      min-height: min(760px, calc(100vh - 120px));
+      margin: 0;
+      padding: clamp(62px, 8vw, 96px) 20px clamp(74px, 9vw, 118px);
+      display: flex;
+      align-items: center;
+      text-align: center;
+      color: #f7fffb;
+      background: #06110f;
+      overflow: hidden;
+    }
+
+    #hero-event-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #06110f;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(2, 8, 9, 0.82) 0%, rgba(2, 8, 9, 0.48) 48%, rgba(2, 8, 9, 0.76) 100%),
+        linear-gradient(180deg, rgba(2, 8, 9, 0.48) 0%, rgba(2, 8, 9, 0.14) 42%, rgba(2, 8, 9, 0.62) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: min(1100px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #9fe7d9;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .kicker::before,
+    .kicker::after {
+      content: "";
+      display: block;
+      width: 34px;
+      height: 2px;
+      background: #ff7348;
+    }
+
+    h1 {
+      max-width: 1040px;
+      margin: 18px auto 14px;
+      font-size: clamp(38px, 6vw, 72px);
+      line-height: 0.98;
+      letter-spacing: 0;
+      text-wrap: balance;
+      text-shadow: 0 18px 44px rgba(0, 0, 0, 0.45);
+    }
+
+    .subtitle {
+      max-width: 850px;
+      margin: 0 auto;
+      color: rgba(232, 249, 243, 0.84);
+      font-size: clamp(18px, 2vw, 22px);
+    }
+
+    .authors {
+      max-width: 980px;
+      margin: 22px auto 6px;
+      font-size: 16px;
+      color: rgba(247, 255, 251, 0.94);
+      font-weight: 650;
+    }
+
+    .affiliations {
+      margin: 0 auto;
+      color: rgba(232, 249, 243, 0.68);
+      font-size: 14px;
+    }
+
+    .actions {
+      margin-top: 28px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 10px 16px;
+      border: 1px solid rgba(232, 249, 243, 0.26);
+      border-radius: var(--radius);
+      background: rgba(247, 255, 251, 0.09);
+      color: #f7fffb;
+      font-weight: 750;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+      backdrop-filter: blur(10px);
+    }
+
+    .button.primary {
+      color: #121817;
+      background: #ff7348;
+      border-color: #ff7348;
+    }
+
+    .button svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .hero-figure {
+      width: min(1180px, calc(100% - 40px));
+      margin: 34px auto 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-figure img {
+      display: block;
+      width: 100%;
+    }
+
+    .caption {
+      margin: 0;
+      padding: 12px 16px 15px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .section {
+      border-top: 1px solid rgba(217, 227, 222, 0.95);
+      background: rgba(255, 255, 255, 0.66);
+    }
+
+    .section-inner {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 72px 0;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 34px;
+      align-items: start;
+      margin-bottom: 28px;
+    }
+
+    .label {
+      margin: 0;
+      color: var(--teal-dark);
+      font-size: 13px;
+      font-weight: 850;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(28px, 3.2vw, 42px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .body-copy {
+      max-width: 840px;
+      color: #26312f;
+      font-size: 17px;
+    }
+
+    .body-copy p { margin: 0 0 16px; }
+    .body-copy p:last-child { margin-bottom: 0; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      min-height: 100%;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+
+    .card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 17px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .method-image,
+    .result-image {
+      margin-top: 26px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 14px 38px rgba(16, 24, 23, 0.08);
+      overflow: hidden;
+    }
+
+    .method-image img,
+    .result-image img {
+      display: block;
+      width: 100%;
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--line);
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .stage {
+      padding: 18px;
+      background: #fbfdfb;
+    }
+
+    .stage span {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .stage strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 16px;
+    }
+
+    .stage p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .metric-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .metric {
+      padding: 18px;
+      border-left: 5px solid var(--teal);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 10px 26px rgba(16, 24, 23, 0.06);
+    }
+
+    .metric:nth-child(2) { border-left-color: var(--orange); }
+    .metric:nth-child(3) { border-left-color: var(--blue); }
+
+    .metric b {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+
+    .metric p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .figure-pair {
+      display: grid;
+      gap: 18px;
+    }
+
+    .terminal {
+      margin: 0;
+      overflow-x: auto;
+      border-radius: var(--radius);
+      background: var(--code);
+      color: #ecfff8;
+      padding: 18px;
+      font-size: 14px;
+      line-height: 1.55;
+      box-shadow: 0 14px 34px rgba(16, 24, 23, 0.14);
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    }
+
+    .citation {
+      margin-top: 20px;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 30px 20px;
+      color: var(--muted);
+      text-align: center;
+      background: var(--paper);
+      font-size: 14px;
+    }
+
+    @media (max-width: 860px) {
+      .nav-inner {
+        width: min(100% - 28px, 1180px);
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px 0;
+      }
+
+      .nav-links {
+        gap: 10px;
+        font-size: 13px;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 34px 14px 40px;
+      }
+
+      .hero-content { width: min(100%, 1180px); }
+      h1 {
+        margin: 12px auto 10px;
+        font-size: clamp(30px, 8.8vw, 38px);
+        line-height: 1.02;
+      }
+
+      .subtitle {
+        font-size: 16px;
+        line-height: 1.45;
+      }
+
+      .authors {
+        margin-top: 16px;
+        font-size: 13.5px;
+        line-height: 1.4;
+      }
+
+      .affiliations {
+        font-size: 12.5px;
+        line-height: 1.35;
+      }
+
+      .actions {
+        margin-top: 18px;
+        gap: 8px;
+      }
+
+      .button {
+        min-height: 38px;
+        padding: 8px 11px;
+        font-size: 14px;
+      }
+
+      .hero-figure { width: min(100% - 28px, 1180px); margin-top: 18px; }
+      .section-inner { width: min(100% - 28px, 1180px); padding: 48px 0; }
+      .section-head,
+      .results {
+        grid-template-columns: 1fr;
+      }
+
+      .card-grid,
+      .pipeline {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="brand" href="#">FracEvent</a>
+      <div class="nav-links">
+        <a href="#abstract">Abstract</a>
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="https://github.com/bonaparte233/fracevent" target="_blank" rel="noopener noreferrer">Code</a>
+        <a href="#citation">Citation</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <canvas id="hero-event-canvas" aria-hidden="true"></canvas>
+      <div class="hero-content">
+        <div class="kicker">Event-camera simulation</div>
+        <h1>FracEvent: Event-Camera Simulation via Fractional-Relaxation Pixel Dynamics</h1>
+        <p class="subtitle">
+          A frame-to-event simulator that keeps pixel-level voltage memory and localizes ON/OFF threshold crossings inside frame intervals.
+        </p>
+        <p class="authors">
+          Langyi Chen<sup>1</sup>, Chuanzhi Xu<sup>1</sup>, Haoxian Zhou<sup>1</sup>, Pengfei Ye<sup>2</sup>, Ziyu Luo<sup>3</sup>, Haodong Chen<sup>1</sup>, Qiang Qu<sup>1</sup>, Xiaoming Chen<sup>3</sup>, Weidong Cai<sup>1</sup>
+        </p>
+        <p class="affiliations">
+          <sup>1</sup>The University of Sydney · <sup>2</sup>Massachusetts Institute of Technology · <sup>3</sup>Beijing Technology and Business University
+        </p>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/bonaparte233/fracevent" target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M12 2C6.48 2 2 6.59 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.09.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.93.86.09-.67.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 7c.85 0 1.71.12 2.51.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.95.68 1.92 0 1.38-.01 2.49-.01 2.83 0 .27.18.59.69.49A10.16 10.16 0 0 0 22 12.25C22 6.59 17.52 2 12 2Z"/>
+            </svg>
+            Code
+          </a>
+          <a class="button" href="#abstract">Read abstract</a>
+          <a class="button" href="#citation">BibTeX</a>
+        </div>
+      </div>
+    </header>
+    <figure class="hero-figure">
+      <img src="assets/overview.png" alt="Overview of the FracEvent simulator and evaluation workflow">
+      <figcaption class="caption">
+        FracEvent converts APS frames into simulated event streams through fractional voltage memory, continuous-time crossing localization, and retained-memory reference updates.
+      </figcaption>
+    </figure>
+
+    <section id="abstract" class="section">
+      <div class="section-inner">
+        <div class="section-head">
+          <p class="label">Abstract</p>
+          <div>
+            <h2>Simulating events by modeling the pixel lifecycle.</h2>
+          </div>
+        </div>
+        <div class="body-copy">
+          <p>
+            Event cameras asynchronously report brightness changes with microsecond-level temporal resolution, but real event data remain difficult to collect at scale because specialized sensors, careful synchronization, and task-specific annotations are required.
+          </p>
+          <p>
+            FracEvent models this pixel-level lifecycle with fractional-relaxation voltage dynamics. Given a log-intensity trajectory, it drives a compact stack of relaxation modes, combines their responses into a voltage state, emits ON/OFF events by localizing threshold crossings on the continuous voltage trajectory, and updates the reference while retaining the underlying memory modes.
+          </p>
+          <p>
+            The retained state links residual voltage response to later event timing. We evaluate FracEvent through direct event-stream comparison and downstream transfer on image reconstruction and optical flow estimation.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="method" class="section">
+      <div class="section-inner">
+        <div class="section-head">
+          <p class="label">Method</p>
+          <div>
+            <h2>Fractional memory, continuous crossing, retained state.</h2>
+          </div>
+        </div>
+        <div class="card-grid">
+          <div class="card">
+            <strong>Pixel event lifecycle</strong>
+            <p>Each pixel keeps a finite stack of relaxation modes instead of treating frame differences as isolated contrast increments.</p>
+          </div>
+          <div class="card">
+            <strong>Sub-frame timing</strong>
+            <p>Events are localized on the voltage trajectory inside each frame interval, avoiding frame-boundary-only emission.</p>
+          </div>
+          <div class="card">
+            <strong>Residual memory</strong>
+            <p>Event references update after threshold crossings, while the relaxation modes are carried into the next interval.</p>
+          </div>
+        </div>
+
+        <div class="pipeline" aria-label="FracEvent simulation pipeline">
+          <div class="stage">
+            <span>Input</span>
+            <strong>Log-intensity trajectory</strong>
+            <p>Frames provide the continuous interval endpoints used by the simulator.</p>
+          </div>
+          <div class="stage">
+            <span>Memory</span>
+            <strong>Fractional modes</strong>
+            <p>Weighted relaxation channels approximate broad temporal memory.</p>
+          </div>
+          <div class="stage">
+            <span>Events</span>
+            <strong>Threshold roots</strong>
+            <p>Active pixels are solved for ON/OFF crossing times within the interval.</p>
+          </div>
+          <div class="stage">
+            <span>Carry</span>
+            <strong>Reference update</strong>
+            <p>References advance by emitted levels while mode state remains available.</p>
+          </div>
+        </div>
+
+        <figure class="method-image">
+          <img src="assets/method.png" loading="lazy" alt="Detailed FracEvent method diagram">
+          <figcaption class="caption">
+            FracEvent combines fractional-relaxation pixel dynamics, threshold crossing, and retained memory state.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="results" class="section">
+      <div class="section-inner">
+        <div class="section-head">
+          <p class="label">Results</p>
+          <div>
+            <h2>Evaluation summary.</h2>
+          </div>
+        </div>
+        <div class="results">
+          <div class="metric-stack">
+            <div class="metric">
+              <b>Event-stream comparison</b>
+              <p>On matched DAVIS240C windows, FracEvent achieves the lowest IEI distance and polarity error among the compared simulators.</p>
+            </div>
+            <div class="metric">
+              <b>Image reconstruction</b>
+              <p>With the fixed E2VID-style training protocol, FracEvent gives the lowest DAVIS240C MSE (0.030) and LPIPS (0.460); ESIM has the highest DAVIS240C SSIM.</p>
+            </div>
+            <div class="metric">
+              <b>Optical flow</b>
+              <p>For EV-FlowNet-style training, FracEvent reaches 2.68 mean AEE, the lowest among simulated training sources and closest to training with real MVSEC events at 2.42.</p>
+            </div>
+          </div>
+          <div class="figure-pair">
+            <figure class="result-image">
+              <img src="assets/reconstruction.png" loading="lazy" alt="Image reconstruction qualitative comparison">
+              <figcaption class="caption">Representative image reconstruction comparison on DAVIS240C.</figcaption>
+            </figure>
+            <figure class="result-image">
+              <img src="assets/flow.png" loading="lazy" alt="Optical flow qualitative comparison">
+              <figcaption class="caption">Representative optical-flow predictions from the downstream evaluation.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="citation" class="section">
+      <div class="section-inner">
+        <div class="section-head">
+          <p class="label">Citation</p>
+          <div>
+            <h2>Cite FracEvent.</h2>
+          </div>
+        </div>
+        <pre class="terminal citation"><code>@article{chen2026fracevent,
+  title   = {FracEvent: Event-Camera Simulation via Fractional-Relaxation Pixel Dynamics},
+  author  = {Chen, Langyi and Xu, Chuanzhi and Zhou, Haoxian and Ye, Pengfei and Luo, Ziyu and Chen, Haodong and Qu, Qiang and Chen, Xiaoming and Cai, Weidong},
+  journal = {arXiv preprint},
+  year    = {2026}
+}</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    FracEvent project page.
+  </footer>
+  <script>
+    (() => {
+      const canvas = document.getElementById("hero-event-canvas");
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d", { alpha: false });
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const loopMs = 7600;
+      const windowMs = 2650;
+      const twoPi = Math.PI * 2;
+      const events = [];
+
+      function random(seed) {
+        const value = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+        return value - Math.floor(value);
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      for (let i = 0; i < 4400; i += 1) {
+        const t = ((i / 4400) * loopMs + random(i + 8) * 140) % loopMs;
+        events.push({
+          t,
+          kind: i % 9,
+          u: random(i * 2.17 + 3),
+          offset: random(i * 1.31 + 9),
+          jitterX: (random(i * 4.07 + 5) - 0.5) * 0.010,
+          jitterY: (random(i * 5.23 + 7) - 0.5) * 0.014,
+          p: random(i * 3.61 + 11) > 0.48 ? 1 : -1,
+          size: 0.85 + random(i * 6.19 + 13) * 1.7
+        });
+      }
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${rect.height}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function edgePoint(event, phase) {
+        const u = event.u;
+        let x = 0.5;
+        let y = 0.5;
+
+        if (event.kind === 0 || event.kind === 1) {
+          y = 0.14 + u * 0.78;
+          const spread = 0.045 + u * 0.34;
+          const wobble = Math.sin((phase * 1.45 + u * 0.72 + event.offset) * twoPi) * 0.015;
+          x = 0.5 + (event.kind === 0 ? -spread : spread) + wobble;
+        } else if (event.kind === 2) {
+          x = 0.12 + u * 0.76;
+          y = 0.30 + Math.sin((u * 1.15 + phase * 0.85 + event.offset * 0.2) * twoPi) * 0.055;
+        } else if (event.kind === 3 || event.kind === 4) {
+          const center = (phase * 0.72 + event.offset) % 1;
+          const cx = 0.12 + center * 0.76;
+          const cy = event.kind === 3 ? 0.57 : 0.69;
+          const bw = event.kind === 3 ? 0.17 : 0.24;
+          const bh = event.kind === 3 ? 0.10 : 0.14;
+          const edge = u * 4;
+          if (edge < 1) {
+            x = cx - bw / 2 + bw * edge;
+            y = cy - bh / 2;
+          } else if (edge < 2) {
+            x = cx + bw / 2;
+            y = cy - bh / 2 + bh * (edge - 1);
+          } else if (edge < 3) {
+            x = cx + bw / 2 - bw * (edge - 2);
+            y = cy + bh / 2;
+          } else {
+            x = cx - bw / 2;
+            y = cy + bh / 2 - bh * (edge - 3);
+          }
+        } else if (event.kind === 5) {
+          x = 0.18 + Math.sin((phase * 0.9 + event.offset) * twoPi) * 0.025;
+          y = 0.18 + u * 0.64;
+        } else if (event.kind === 6) {
+          x = 0.78 + Math.sin((phase * 0.74 + event.offset) * twoPi) * 0.030;
+          y = 0.20 + u * 0.58;
+        } else if (event.kind === 7) {
+          x = 0.10 + u * 0.80;
+          y = 0.77 + Math.sin((u * 1.8 - phase * 0.95 + event.offset * 0.4) * twoPi) * 0.045;
+        } else {
+          const angle = u * twoPi;
+          const center = (phase * 0.55 + event.offset) % 1;
+          x = 0.22 + center * 0.56 + Math.cos(angle) * 0.055;
+          y = 0.43 + Math.sin(angle) * 0.055;
+        }
+
+        return {
+          x: clamp(x + event.jitterX, 0.035, 0.965),
+          y: clamp(y + event.jitterY, 0.075, 0.925)
+        };
+      }
+
+      function drawScene(w, h, phase) {
+        const bg = ctx.createLinearGradient(0, 0, w, h);
+        bg.addColorStop(0, "#07110f");
+        bg.addColorStop(0.48, "#0d211d");
+        bg.addColorStop(1, "#07110f");
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.globalAlpha = 0.22;
+        ctx.strokeStyle = "rgba(201, 234, 224, 0.20)";
+        ctx.lineWidth = 1;
+        for (let x = 0; x < w; x += 58) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, h);
+          ctx.stroke();
+        }
+        for (let y = 0; y < h; y += 42) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(w, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        ctx.save();
+        ctx.fillStyle = "rgba(14, 43, 38, 0.56)";
+        ctx.beginPath();
+        ctx.moveTo(w * 0.39, h * 0.18);
+        ctx.lineTo(w * 0.61, h * 0.18);
+        ctx.lineTo(w * 0.88, h);
+        ctx.lineTo(w * 0.12, h);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = "rgba(227, 250, 241, 0.17)";
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        ctx.globalAlpha = 0.28;
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
+        ctx.lineWidth = 1.4;
+        for (let lane = -1; lane <= 1; lane += 2) {
+          ctx.beginPath();
+          for (let i = 0; i <= 72; i += 1) {
+            const u = i / 72;
+            const y = h * (0.15 + u * 0.78);
+            const spread = 0.045 + u * 0.34;
+            const x = w * (0.5 + lane * spread + Math.sin((phase * 1.45 + u * 0.72) * twoPi) * 0.014);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        ctx.save();
+        ctx.globalAlpha = 0.18;
+        ctx.fillStyle = "rgba(244, 255, 250, 0.32)";
+        for (let row = 0; row < h; row += 4) {
+          ctx.fillRect(0, row, w, 1);
+        }
+        ctx.restore();
+      }
+
+      function drawEvents(now, w, h) {
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+
+        for (const event of events) {
+          const age = (now - event.t + loopMs) % loopMs;
+          if (age > windowMs) continue;
+
+          const fade = 1 - age / windowMs;
+          const point = edgePoint(event, event.t / loopMs);
+          const x = point.x * w;
+          const y = point.y * h;
+          const radius = event.size * (0.78 + fade * 0.72);
+          const alpha = 0.08 + Math.pow(fade, 1.45) * 0.68;
+
+          ctx.fillStyle = event.p > 0
+            ? `rgba(255, 112, 66, ${alpha})`
+            : `rgba(87, 169, 255, ${alpha * 0.95})`;
+          ctx.fillRect(x - radius * 0.5, y - radius * 0.5, radius, radius);
+
+          if (fade > 0.72 && event.size > 1.7) {
+            ctx.globalAlpha = 0.34 * fade;
+            ctx.beginPath();
+            ctx.arc(x, y, radius * 2.2, 0, twoPi);
+            ctx.fill();
+            ctx.globalAlpha = 1;
+          }
+        }
+
+        ctx.restore();
+      }
+
+      function render(timestamp) {
+        const rect = canvas.getBoundingClientRect();
+        const w = rect.width;
+        const h = rect.height;
+        const now = prefersReducedMotion ? loopMs * 0.48 : timestamp % loopMs;
+        const phase = now / loopMs;
+
+        drawScene(w, h, phase);
+        drawEvents(now, w, h);
+      }
+
+      function tick(timestamp) {
+        render(timestamp);
+        requestAnimationFrame(tick);
+      }
+
+      resize();
+      if ("ResizeObserver" in window) {
+        new ResizeObserver(() => {
+          resize();
+          render(performance.now());
+        }).observe(canvas);
+      } else {
+        window.addEventListener("resize", () => {
+          resize();
+          render(performance.now());
+        }, { passive: true });
+      }
+      render(performance.now());
+      if (!prefersReducedMotion) requestAnimationFrame(tick);
+    })();
+  </script>
+</body>
+</html>

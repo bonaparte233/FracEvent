@@ -1,0 +1,13 @@
+# FracEvent DAVIS346 parameter settings.
+input:
+  path: null
+
+model:
+  alpha: 0.72
+  modes: 6
+  tau_ref: 0.0025
+  theta_on: 0.45
+  theta_off: 0.5
+
+output:
+  path: events_davis346.npz

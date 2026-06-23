@@ -1,0 +1,15 @@
+name: fracevent
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - numpy
+      - torch
+      - h5py
+      - pyyaml
+      - pillow
+      - imageio
+      - imageio-ffmpeg
+      - -e .

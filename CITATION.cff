@@ -1,0 +1,49 @@
+cff-version: 1.2.0
+title: "FracEvent: Event-Camera Simulation via Fractional-Relaxation Pixel Dynamics"
+message: "If you use this software, please cite the FracEvent paper."
+type: software
+authors:
+  - family-names: Chen
+    given-names: Langyi
+  - family-names: Xu
+    given-names: Chuanzhi
+  - family-names: Zhou
+    given-names: Haoxian
+  - family-names: Ye
+    given-names: Pengfei
+  - family-names: Luo
+    given-names: Ziyu
+  - family-names: Chen
+    given-names: Haodong
+  - family-names: Qu
+    given-names: Qiang
+  - family-names: Chen
+    given-names: Xiaoming
+  - family-names: Cai
+    given-names: Weidong
+version: 0.1.0
+date-released: 2026-06-23
+preferred-citation:
+  type: article
+  title: "FracEvent: Event-Camera Simulation via Fractional-Relaxation Pixel Dynamics"
+  authors:
+    - family-names: Chen
+      given-names: Langyi
+    - family-names: Xu
+      given-names: Chuanzhi
+    - family-names: Zhou
+      given-names: Haoxian
+    - family-names: Ye
+      given-names: Pengfei
+    - family-names: Luo
+      given-names: Ziyu
+    - family-names: Chen
+      given-names: Haodong
+    - family-names: Qu
+      given-names: Qiang
+    - family-names: Chen
+      given-names: Xiaoming
+    - family-names: Cai
+      given-names: Weidong
+  journal: "arXiv preprint"
+  year: 2026

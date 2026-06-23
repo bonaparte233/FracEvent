@@ -1,0 +1,13 @@
+# FracEvent DAVIS240 parameter settings.
+input:
+  path: null
+
+model:
+  alpha: 0.76
+  modes: 4
+  tau_ref: 0.0025
+  theta_on: 0.5625
+  theta_off: 0.4
+
+output:
+  path: events_davis240.npz
