@@ -29,7 +29,7 @@ Official implementation of **FracEvent: Event-Camera Simulation via Fractional-R
 
 ## Features
 
-- **Fractional-relaxation pixel dynamics** for frame-to-event simulation.
+- **Fractional-relaxation pixel dynamics** for event camera simulation.
 - **Sub-frame event timing** from threshold localization inside frame intervals.
 - **Flexible inputs**: NPZ, HDF5, video files, or image-sequence folders.
 - **Simple outputs**: NPZ or HDF5 event streams with metadata.
@@ -166,7 +166,7 @@ If this code is useful for your research, please cite the paper:
 ```bibtex
 @article{chen2026fracevent,
   title   = {FracEvent: Event-Camera Simulation via Fractional-Relaxation Pixel Dynamics},
-  author  = {Chen, Langyi and Xu, Chuanzhi and Zhou, Haoxian and Ye, Pengfei and Luo, Ziyu and Chen, Haodong and Qu, Qiang and Chen, Xiaoming and Cai, Weidong},
+  author  = {Langyi Chen and Chuanzhi Xu and Haoxian Zhou and Pengfei Ye and Ziyu Luo and Haodong Chen and Qiang Qu and Xiaoming Chen and Weidong Cai},
   journal = {arXiv preprint},
   year    = {2026}
 }

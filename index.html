@@ -31,11 +31,7 @@
     body {
       margin: 0;
       color: var(--ink);
-      background:
-        linear-gradient(90deg, rgba(8, 124, 120, 0.045) 1px, transparent 1px),
-        linear-gradient(180deg, rgba(8, 124, 120, 0.035) 1px, transparent 1px),
-        var(--paper);
-      background-size: 44px 44px;
+      background: var(--paper);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.58;
     }
@@ -46,6 +42,12 @@
     }
 
     a:hover { text-decoration: underline; }
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid rgba(8, 124, 120, 0.35);
+      outline-offset: 3px;
+    }
+
     img { max-width: 100%; }
 
     .nav {
@@ -91,19 +93,20 @@
       display: flex;
       align-items: center;
       text-align: center;
-      color: #f7fffb;
-      background: #06110f;
+      color: var(--ink);
+      background: var(--paper);
       overflow: hidden;
     }
 
-    #hero-event-canvas {
+    .hero-video {
       position: absolute;
       inset: 0;
       z-index: 0;
       display: block;
       width: 100%;
       height: 100%;
-      background: #06110f;
+      object-fit: cover;
+      background: var(--paper);
     }
 
     .hero::before {
@@ -113,14 +116,15 @@
       z-index: 1;
       pointer-events: none;
       background:
-        linear-gradient(90deg, rgba(2, 8, 9, 0.82) 0%, rgba(2, 8, 9, 0.48) 48%, rgba(2, 8, 9, 0.76) 100%),
-        linear-gradient(180deg, rgba(2, 8, 9, 0.48) 0%, rgba(2, 8, 9, 0.14) 42%, rgba(2, 8, 9, 0.62) 100%);
+        linear-gradient(90deg, rgba(246, 248, 245, 0.58) 0%, rgba(246, 248, 245, 0.18) 48%, rgba(246, 248, 245, 0.54) 100%),
+        linear-gradient(180deg, rgba(246, 248, 245, 0.54) 0%, rgba(246, 248, 245, 0.24) 43%, rgba(246, 248, 245, 0.56) 100%);
     }
 
     .hero-content {
       position: relative;
       z-index: 2;
       width: min(1100px, calc(100% - 40px));
+      min-width: 0;
       margin: 0 auto;
     }
 
@@ -128,7 +132,7 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      color: #9fe7d9;
+      color: var(--teal-dark);
       font-size: 13px;
       font-weight: 800;
       letter-spacing: 0;
@@ -151,27 +155,31 @@
       line-height: 0.98;
       letter-spacing: 0;
       text-wrap: balance;
-      text-shadow: 0 18px 44px rgba(0, 0, 0, 0.45);
+      text-shadow: 0 10px 34px rgba(255, 255, 255, 0.80);
     }
 
     .subtitle {
       max-width: 850px;
       margin: 0 auto;
-      color: rgba(232, 249, 243, 0.84);
+      color: #31423e;
       font-size: clamp(18px, 2vw, 22px);
     }
 
     .authors {
-      max-width: 980px;
+      max-width: 1120px;
       margin: 22px auto 6px;
       font-size: 16px;
-      color: rgba(247, 255, 251, 0.94);
+      color: #17231f;
       font-weight: 650;
+    }
+
+    .authors span {
+      display: block;
     }
 
     .affiliations {
       margin: 0 auto;
-      color: rgba(232, 249, 243, 0.68);
+      color: #53625e;
       font-size: 14px;
     }
 
@@ -188,26 +196,64 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      min-height: 42px;
+      --button-bg: #087c78;
+      --button-hover: #066b68;
+      --button-shadow: rgba(8, 124, 120, 0.24);
+      min-height: 44px;
       padding: 10px 16px;
-      border: 1px solid rgba(232, 249, 243, 0.26);
+      border: 1px solid var(--button-bg);
       border-radius: var(--radius);
-      background: rgba(247, 255, 251, 0.09);
-      color: #f7fffb;
+      background: var(--button-bg);
+      color: #fffdf8;
       font-weight: 750;
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+      box-shadow: 0 14px 34px var(--button-shadow);
       backdrop-filter: blur(10px);
+      touch-action: manipulation;
+      transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
     }
 
-    .button.primary {
-      color: #121817;
-      background: #ff7348;
-      border-color: #ff7348;
+    .button.code-button {
+      --button-bg: #24292f;
+      --button-hover: #1f2328;
+      --button-shadow: rgba(36, 41, 47, 0.24);
+    }
+
+    .button.paper-button {
+      --button-bg: #c92a2a;
+      --button-hover: #a92424;
+      --button-shadow: rgba(201, 42, 42, 0.24);
+    }
+
+    .button.arxiv-button {
+      --button-bg: #9d1c31;
+      --button-hover: #861728;
+      --button-shadow: rgba(157, 28, 49, 0.24);
+    }
+
+    .button.bib-button {
+      --button-bg: #087c78;
+      --button-hover: #066b68;
+      --button-shadow: rgba(8, 124, 120, 0.24);
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      text-decoration: none;
+      background: var(--button-hover);
+      border-color: var(--button-hover);
+      box-shadow: 0 16px 38px var(--button-shadow);
     }
 
     .button svg {
       width: 18px;
       height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .button .arxiv-logomark {
+      width: 17px;
+      height: 24px;
+      display: block;
       flex: 0 0 auto;
     }
 
@@ -237,7 +283,6 @@
 
     .section {
       border-top: 1px solid rgba(217, 227, 222, 0.95);
-      background: rgba(255, 255, 255, 0.66);
     }
 
     .section-inner {
@@ -308,7 +353,7 @@
 
     .method-image,
     .result-image {
-      margin-top: 26px;
+      margin: 26px 0 0;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: var(--panel);
@@ -359,15 +404,32 @@
       font-size: 14px;
     }
 
-    .results {
+    .result-subsection + .result-subsection {
+      margin-top: 30px;
+    }
+
+    .subsection-title {
+      margin: 0 0 14px;
+      color: var(--teal-dark);
+      font-size: 15px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .video-grid {
       display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 18px;
-      align-items: start;
+    }
+
+    .video-grid .result-image,
+    .figure-pair .result-image {
+      margin: 0;
     }
 
     .metric-stack {
       display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
     }
 
@@ -396,7 +458,18 @@
 
     .figure-pair {
       display: grid;
+      grid-template-columns: 1fr;
       gap: 18px;
+      align-items: start;
+      margin-top: 18px;
+    }
+
+    .event-video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: var(--panel);
+      object-fit: cover;
     }
 
     .terminal {
@@ -416,7 +489,45 @@
     }
 
     .citation {
+      position: relative;
       margin-top: 20px;
+    }
+
+    .citation .terminal {
+      padding-top: 48px;
+    }
+
+    .copy-citation {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 36px;
+      padding: 7px 11px;
+      border: 1px solid rgba(236, 255, 248, 0.22);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ecfff8;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 750;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background-color 180ms ease, border-color 180ms ease;
+    }
+
+    .copy-citation:hover,
+    .copy-citation:focus-visible {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .copy-citation svg {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
     }
 
     footer {
@@ -447,11 +558,25 @@
         padding: 34px 14px 40px;
       }
 
-      .hero-content { width: min(100%, 1180px); }
+      .hero::before {
+        background:
+          linear-gradient(90deg, rgba(246, 248, 245, 0.76) 0%, rgba(246, 248, 245, 0.38) 48%, rgba(246, 248, 245, 0.72) 100%),
+          linear-gradient(180deg, rgba(246, 248, 245, 0.70) 0%, rgba(246, 248, 245, 0.34) 42%, rgba(246, 248, 245, 0.68) 100%);
+      }
+
+      .hero-content {
+        width: 100%;
+        max-width: 100%;
+      }
+
       h1 {
+        max-width: 100%;
         margin: 12px auto 10px;
-        font-size: clamp(30px, 8.8vw, 38px);
-        line-height: 1.02;
+        font-size: 33px;
+        line-height: 1.05;
+        text-wrap: wrap;
+        overflow-wrap: anywhere;
+        word-break: break-word;
       }
 
       .subtitle {
@@ -460,38 +585,65 @@
       }
 
       .authors {
+        max-width: 100%;
         margin-top: 16px;
-        font-size: 13.5px;
+        font-size: 13px;
         line-height: 1.4;
+        overflow-wrap: break-word;
       }
 
       .affiliations {
+        max-width: 100%;
         font-size: 12.5px;
         line-height: 1.35;
+        overflow-wrap: break-word;
       }
 
       .actions {
         margin-top: 18px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 92px));
+        justify-content: center;
         gap: 8px;
       }
 
       .button {
-        min-height: 38px;
-        padding: 8px 11px;
+        width: 100%;
+        min-height: 44px;
+        padding: 9px 11px;
         font-size: 14px;
+      }
+
+      .copy-citation {
+        min-height: 44px;
+        padding: 9px 12px;
       }
 
       .hero-figure { width: min(100% - 28px, 1180px); margin-top: 18px; }
       .section-inner { width: min(100% - 28px, 1180px); padding: 48px 0; }
-      .section-head,
-      .results {
+      .section-head {
         grid-template-columns: 1fr;
       }
 
       .card-grid,
-      .pipeline {
+      .pipeline,
+      .video-grid,
+      .figure-pair,
+      .metric-stack {
         grid-template-columns: 1fr;
       }
+
+      .authors span {
+        display: block;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero {
+        background: var(--paper) url("assets/event_accumulation_poster.png") center / cover no-repeat;
+      }
+
+      .hero-video { display: none; }
     }
   </style>
 </head>
@@ -511,28 +663,45 @@
 
   <main>
     <header class="hero">
-      <canvas id="hero-event-canvas" aria-hidden="true"></canvas>
+      <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/event_accumulation_poster.png" aria-hidden="true">
+        <source src="assets/event_accumulation.mp4" type="video/mp4">
+      </video>
       <div class="hero-content">
         <div class="kicker">Event-camera simulation</div>
         <h1>FracEvent: Event-Camera Simulation via Fractional-Relaxation Pixel Dynamics</h1>
         <p class="subtitle">
-          A frame-to-event simulator that keeps pixel-level voltage memory and localizes ON/OFF threshold crossings inside frame intervals.
+          An event camera simulator that keeps pixel-level voltage memory and localizes ON/OFF threshold crossings inside frame intervals.
         </p>
         <p class="authors">
-          Langyi Chen<sup>1</sup>, Chuanzhi Xu<sup>1</sup>, Haoxian Zhou<sup>1</sup>, Pengfei Ye<sup>2</sup>, Ziyu Luo<sup>3</sup>, Haodong Chen<sup>1</sup>, Qiang Qu<sup>1</sup>, Xiaoming Chen<sup>3</sup>, Weidong Cai<sup>1</sup>
+          <span>Langyi Chen<sup>1</sup>, Chuanzhi Xu<sup>1</sup>, Haoxian Zhou<sup>1</sup>, Pengfei Ye<sup>2</sup>, Ziyu Luo<sup>3</sup>,</span>
+          <span>Haodong Chen<sup>1</sup>, Qiang Qu<sup>1</sup>, Xiaoming Chen<sup>3</sup>, Weidong Cai<sup>1</sup></span>
         </p>
         <p class="affiliations">
           <sup>1</sup>The University of Sydney · <sup>2</sup>Massachusetts Institute of Technology · <sup>3</sup>Beijing Technology and Business University
         </p>
         <div class="actions">
-          <a class="button primary" href="https://github.com/bonaparte233/fracevent" target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
+          <a class="button code-button" href="https://github.com/bonaparte233/fracevent" target="_blank" rel="noopener noreferrer" aria-label="Code on GitHub">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path fill="currentColor" d="M12 2C6.48 2 2 6.59 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.09.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.36 1.12 2.93.86.09-.67.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.3 9.3 0 0 1 12 7c.85 0 1.71.12 2.51.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.95.68 1.92 0 1.38-.01 2.49-.01 2.83 0 .27.18.59.69.49A10.16 10.16 0 0 0 22 12.25C22 6.59 17.52 2 12 2Z"/>
             </svg>
             Code
           </a>
-          <a class="button" href="#abstract">Read abstract</a>
-          <a class="button" href="#citation">BibTeX</a>
+          <a class="button paper-button" href="assets/fracevent.pdf" download>
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6M9 8h2"/>
+            </svg>
+            Paper
+          </a>
+          <a class="button arxiv-button" href="https://arxiv.org/abs/0000.00000" target="_blank" rel="noopener noreferrer" aria-label="arXiv">
+            <img class="arxiv-logomark" src="assets/arxiv-logomark-small.png" alt="" aria-hidden="true">
+            arXiv
+          </a>
+          <a class="button bib-button" href="#citation">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M9.4 7H5.9C4.8 8.7 4.2 10.6 4.2 12.8V17h5.1v-5H6.8c.1-1.3.6-2.6 1.5-3.9L9.4 7Zm10 0h-3.5c-1.1 1.7-1.7 3.6-1.7 5.8V17h5.1v-5h-2.5c.1-1.3.6-2.6 1.5-3.9L19.4 7Z"/>
+            </svg>
+            Bib
+          </a>
         </div>
       </div>
     </header>
@@ -625,10 +794,38 @@
         <div class="section-head">
           <p class="label">Results</p>
           <div>
-            <h2>Evaluation summary.</h2>
+            <h2>Visualization and evaluation results.</h2>
           </div>
         </div>
-        <div class="results">
+        <div class="result-subsection">
+          <h3 class="subsection-title">Visualization</h3>
+          <div class="video-grid">
+            <figure class="result-image">
+              <video class="event-video" autoplay muted loop playsinline preload="metadata" poster="assets/result_davis240c_events_poster.png" aria-label="Accumulated FracEvent event frames on DAVIS240C">
+                <source src="assets/result_davis240c_events.mp4" type="video/mp4">
+              </video>
+              <figcaption class="caption">Accumulated FracEvent event frames on DAVIS240C.</figcaption>
+            </figure>
+            <figure class="result-image">
+              <video class="event-video" autoplay muted loop playsinline preload="metadata" poster="assets/result_mvsec_events_poster.png" aria-label="Accumulated FracEvent event frames on MVSEC">
+                <source src="assets/result_mvsec_events.mp4" type="video/mp4">
+              </video>
+              <figcaption class="caption">Accumulated FracEvent event frames on MVSEC.</figcaption>
+            </figure>
+          </div>
+          <div class="figure-pair">
+            <figure class="result-image">
+              <img src="assets/reconstruction.png" alt="Visual comparison examples for image reconstruction">
+              <figcaption class="caption">Visual comparison examples for image reconstruction.</figcaption>
+            </figure>
+            <figure class="result-image">
+              <img src="assets/flow.png" alt="Visual comparison examples for optical flow estimation">
+              <figcaption class="caption">Visual comparison examples for optical flow estimation.</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="result-subsection">
+          <h3 class="subsection-title">Eval result</h3>
           <div class="metric-stack">
             <div class="metric">
               <b>Event-stream comparison</b>
@@ -643,16 +840,6 @@
               <p>For EV-FlowNet-style training, FracEvent reaches 2.68 mean AEE, the lowest among simulated training sources and closest to training with real MVSEC events at 2.42.</p>
             </div>
           </div>
-          <div class="figure-pair">
-            <figure class="result-image">
-              <img src="assets/reconstruction.png" loading="lazy" alt="Visual comparison examples for image reconstruction">
-              <figcaption class="caption">Visual comparison examples for image reconstruction.</figcaption>
-            </figure>
-            <figure class="result-image">
-              <img src="assets/flow.png" loading="lazy" alt="Visual comparison examples for optical flow estimation">
-              <figcaption class="caption">Visual comparison examples for optical flow estimation.</figcaption>
-            </figure>
-          </div>
         </div>
       </div>
     </section>
@@ -665,12 +852,22 @@
             <h2>Cite FracEvent.</h2>
           </div>
         </div>
-        <pre class="terminal citation"><code>@article{chen2026fracevent,
+        <div class="citation">
+          <button class="copy-citation" type="button" data-copy-target="citation-bibtex" aria-label="Copy BibTeX">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M8 8h11v13H8zM5 16H4V3h12v1"/>
+            </svg>
+            <span>Copy</span>
+          </button>
+          <pre class="terminal"><code id="citation-bibtex">@article{chen2026fracevent,
   title   = {FracEvent: Event-Camera Simulation via Fractional-Relaxation Pixel Dynamics},
-  author  = {Chen, Langyi and Xu, Chuanzhi and Zhou, Haoxian and Ye, Pengfei and Luo, Ziyu and Chen, Haodong and Qu, Qiang and Chen, Xiaoming and Cai, Weidong},
+  author  = {Langyi Chen and Chuanzhi Xu and Haoxian Zhou and
+             Pengfei Ye and Ziyu Luo and Haodong Chen and
+             Qiang Qu and Xiaoming Chen and Weidong Cai},
   journal = {arXiv preprint},
   year    = {2026}
 }</code></pre>
+        </div>
       </div>
     </section>
   </main>
@@ -680,233 +877,42 @@
   </footer>
   <script>
     (() => {
-      const canvas = document.getElementById("hero-event-canvas");
-      if (!canvas) return;
+      const button = document.querySelector("[data-copy-target]");
+      if (!button) return;
 
-      const ctx = canvas.getContext("2d", { alpha: false });
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const loopMs = 7600;
-      const windowMs = 2650;
-      const twoPi = Math.PI * 2;
-      const events = [];
+      const label = button.querySelector("span");
+      const target = document.getElementById(button.dataset.copyTarget);
+      const originalText = label.textContent;
 
-      function random(seed) {
-        const value = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
-        return value - Math.floor(value);
+      function copyWithTextarea(text) {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        const ok = document.execCommand("copy");
+        area.remove();
+        return ok;
       }
 
-      function clamp(value, min, max) {
-        return Math.min(max, Math.max(min, value));
-      }
+      button.addEventListener("click", async () => {
+        const text = target.textContent;
+        let copied = false;
 
-      for (let i = 0; i < 4400; i += 1) {
-        const t = ((i / 4400) * loopMs + random(i + 8) * 140) % loopMs;
-        events.push({
-          t,
-          kind: i % 9,
-          u: random(i * 2.17 + 3),
-          offset: random(i * 1.31 + 9),
-          jitterX: (random(i * 4.07 + 5) - 0.5) * 0.010,
-          jitterY: (random(i * 5.23 + 7) - 0.5) * 0.014,
-          p: random(i * 3.61 + 11) > 0.48 ? 1 : -1,
-          size: 0.85 + random(i * 6.19 + 13) * 1.7
-        });
-      }
-
-      function resize() {
-        const rect = canvas.getBoundingClientRect();
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
-        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
-        canvas.style.width = `${rect.width}px`;
-        canvas.style.height = `${rect.height}px`;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      }
-
-      function edgePoint(event, phase) {
-        const u = event.u;
-        let x = 0.5;
-        let y = 0.5;
-
-        if (event.kind === 0 || event.kind === 1) {
-          y = 0.14 + u * 0.78;
-          const spread = 0.045 + u * 0.34;
-          const wobble = Math.sin((phase * 1.45 + u * 0.72 + event.offset) * twoPi) * 0.015;
-          x = 0.5 + (event.kind === 0 ? -spread : spread) + wobble;
-        } else if (event.kind === 2) {
-          x = 0.12 + u * 0.76;
-          y = 0.30 + Math.sin((u * 1.15 + phase * 0.85 + event.offset * 0.2) * twoPi) * 0.055;
-        } else if (event.kind === 3 || event.kind === 4) {
-          const center = (phase * 0.72 + event.offset) % 1;
-          const cx = 0.12 + center * 0.76;
-          const cy = event.kind === 3 ? 0.57 : 0.69;
-          const bw = event.kind === 3 ? 0.17 : 0.24;
-          const bh = event.kind === 3 ? 0.10 : 0.14;
-          const edge = u * 4;
-          if (edge < 1) {
-            x = cx - bw / 2 + bw * edge;
-            y = cy - bh / 2;
-          } else if (edge < 2) {
-            x = cx + bw / 2;
-            y = cy - bh / 2 + bh * (edge - 1);
-          } else if (edge < 3) {
-            x = cx + bw / 2 - bw * (edge - 2);
-            y = cy + bh / 2;
-          } else {
-            x = cx - bw / 2;
-            y = cy + bh / 2 - bh * (edge - 3);
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            copied = true;
           }
-        } else if (event.kind === 5) {
-          x = 0.18 + Math.sin((phase * 0.9 + event.offset) * twoPi) * 0.025;
-          y = 0.18 + u * 0.64;
-        } else if (event.kind === 6) {
-          x = 0.78 + Math.sin((phase * 0.74 + event.offset) * twoPi) * 0.030;
-          y = 0.20 + u * 0.58;
-        } else if (event.kind === 7) {
-          x = 0.10 + u * 0.80;
-          y = 0.77 + Math.sin((u * 1.8 - phase * 0.95 + event.offset * 0.4) * twoPi) * 0.045;
-        } else {
-          const angle = u * twoPi;
-          const center = (phase * 0.55 + event.offset) % 1;
-          x = 0.22 + center * 0.56 + Math.cos(angle) * 0.055;
-          y = 0.43 + Math.sin(angle) * 0.055;
+        } catch {
+          copied = false;
         }
 
-        return {
-          x: clamp(x + event.jitterX, 0.035, 0.965),
-          y: clamp(y + event.jitterY, 0.075, 0.925)
-        };
-      }
-
-      function drawScene(w, h, phase) {
-        const bg = ctx.createLinearGradient(0, 0, w, h);
-        bg.addColorStop(0, "#07110f");
-        bg.addColorStop(0.48, "#0d211d");
-        bg.addColorStop(1, "#07110f");
-        ctx.fillStyle = bg;
-        ctx.fillRect(0, 0, w, h);
-
-        ctx.save();
-        ctx.globalAlpha = 0.22;
-        ctx.strokeStyle = "rgba(201, 234, 224, 0.20)";
-        ctx.lineWidth = 1;
-        for (let x = 0; x < w; x += 58) {
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, h);
-          ctx.stroke();
-        }
-        for (let y = 0; y < h; y += 42) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(w, y);
-          ctx.stroke();
-        }
-        ctx.restore();
-
-        ctx.save();
-        ctx.fillStyle = "rgba(14, 43, 38, 0.56)";
-        ctx.beginPath();
-        ctx.moveTo(w * 0.39, h * 0.18);
-        ctx.lineTo(w * 0.61, h * 0.18);
-        ctx.lineTo(w * 0.88, h);
-        ctx.lineTo(w * 0.12, h);
-        ctx.closePath();
-        ctx.fill();
-        ctx.strokeStyle = "rgba(227, 250, 241, 0.17)";
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
-        ctx.restore();
-
-        ctx.save();
-        ctx.globalAlpha = 0.28;
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
-        ctx.lineWidth = 1.4;
-        for (let lane = -1; lane <= 1; lane += 2) {
-          ctx.beginPath();
-          for (let i = 0; i <= 72; i += 1) {
-            const u = i / 72;
-            const y = h * (0.15 + u * 0.78);
-            const spread = 0.045 + u * 0.34;
-            const x = w * (0.5 + lane * spread + Math.sin((phase * 1.45 + u * 0.72) * twoPi) * 0.014);
-            if (i === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-          }
-          ctx.stroke();
-        }
-        ctx.restore();
-
-        ctx.save();
-        ctx.globalAlpha = 0.18;
-        ctx.fillStyle = "rgba(244, 255, 250, 0.32)";
-        for (let row = 0; row < h; row += 4) {
-          ctx.fillRect(0, row, w, 1);
-        }
-        ctx.restore();
-      }
-
-      function drawEvents(now, w, h) {
-        ctx.save();
-        ctx.globalCompositeOperation = "lighter";
-
-        for (const event of events) {
-          const age = (now - event.t + loopMs) % loopMs;
-          if (age > windowMs) continue;
-
-          const fade = 1 - age / windowMs;
-          const point = edgePoint(event, event.t / loopMs);
-          const x = point.x * w;
-          const y = point.y * h;
-          const radius = event.size * (0.78 + fade * 0.72);
-          const alpha = 0.08 + Math.pow(fade, 1.45) * 0.68;
-
-          ctx.fillStyle = event.p > 0
-            ? `rgba(255, 112, 66, ${alpha})`
-            : `rgba(87, 169, 255, ${alpha * 0.95})`;
-          ctx.fillRect(x - radius * 0.5, y - radius * 0.5, radius, radius);
-
-          if (fade > 0.72 && event.size > 1.7) {
-            ctx.globalAlpha = 0.34 * fade;
-            ctx.beginPath();
-            ctx.arc(x, y, radius * 2.2, 0, twoPi);
-            ctx.fill();
-            ctx.globalAlpha = 1;
-          }
-        }
-
-        ctx.restore();
-      }
-
-      function render(timestamp) {
-        const rect = canvas.getBoundingClientRect();
-        const w = rect.width;
-        const h = rect.height;
-        const now = prefersReducedMotion ? loopMs * 0.48 : timestamp % loopMs;
-        const phase = now / loopMs;
-
-        drawScene(w, h, phase);
-        drawEvents(now, w, h);
-      }
-
-      function tick(timestamp) {
-        render(timestamp);
-        requestAnimationFrame(tick);
-      }
-
-      resize();
-      if ("ResizeObserver" in window) {
-        new ResizeObserver(() => {
-          resize();
-          render(performance.now());
-        }).observe(canvas);
-      } else {
-        window.addEventListener("resize", () => {
-          resize();
-          render(performance.now());
-        }, { passive: true });
-      }
-      render(performance.now());
-      if (!prefersReducedMotion) requestAnimationFrame(tick);
+        if (!copied) copied = copyWithTextarea(text);
+        label.textContent = copied ? "Copied" : "Failed";
+        window.setTimeout(() => { label.textContent = originalText; }, 1400);
+      });
     })();
   </script>
 </body>
