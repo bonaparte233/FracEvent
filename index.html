@@ -436,7 +436,7 @@
 
     .video-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
       gap: 18px;
     }
 
@@ -490,9 +490,9 @@
     .event-video {
       display: block;
       width: 100%;
-      aspect-ratio: 4 / 3;
+      aspect-ratio: 8 / 3;
       background: var(--panel);
-      object-fit: cover;
+      object-fit: contain;
     }
 
     .terminal {
@@ -856,18 +856,18 @@
           <div class="video-grid">
             <figure class="result-image">
               <video class="event-video" autoplay muted loop playsinline preload="metadata"
-                poster="assets/result_davis240c_events_poster.png"
-                aria-label="Accumulated FracEvent events on DAVIS240C">
-                <source src="assets/result_davis240c_events.mp4" type="video/mp4">
+                poster="assets/result_davis240c_aps_events_poster.png"
+                aria-label="DAVIS240C APS frames paired with accumulated FracEvent events">
+                <source src="assets/result_davis240c_aps_events.mp4" type="video/mp4">
               </video>
-              <figcaption class="caption">Accumulated FracEvent events on DAVIS240C dataset.</figcaption>
+              <figcaption class="caption">DAVIS240C APS frames on the left, accumulated FracEvent events on the right.</figcaption>
             </figure>
             <figure class="result-image">
               <video class="event-video" autoplay muted loop playsinline preload="metadata"
-                poster="assets/result_mvsec_events_poster.png" aria-label="Accumulated FracEvent events on MVSEC">
-                <source src="assets/result_mvsec_events.mp4" type="video/mp4">
+                poster="assets/result_mvsec_aps_events_poster.png" aria-label="MVSEC APS frames paired with accumulated FracEvent events">
+                <source src="assets/result_mvsec_aps_events.mp4" type="video/mp4">
               </video>
-              <figcaption class="caption">Accumulated FracEvent events on MVSEC dataset.</figcaption>
+              <figcaption class="caption">MVSEC APS frames on the left, accumulated FracEvent events on the right.</figcaption>
             </figure>
           </div>
           <div class="figure-pair">
