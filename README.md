@@ -164,11 +164,14 @@ assets/             project-page assets
 If this code is useful for your research, please cite the paper:
 
 ```bibtex
-@article{chen2026fracevent,
-  title   = {FracEvent: Event-Camera Simulation via Fractional-Relaxation Pixel Dynamics},
-  author  = {Langyi Chen and Chuanzhi Xu and Haoxian Zhou and Pengfei Ye and Ziyu Luo and Haodong Chen and Qiang Qu and Xiaoming Chen and Weidong Cai},
-  journal = {arXiv preprint},
-  year    = {2026}
+@misc{chen2026fracevent,
+      title={FracEvent: Event-Camera Simulation via Fractional-Relaxation Pixel Dynamics},
+      author={Langyi Chen and Chuanzhi Xu and Haoxian Zhou and Pengfei Ye and Ziyu Luo and Haodong Chen and Qiang Qu and Xiaoming Chen and Weidong Cai},
+      year={2026},
+      eprint={2606.26636},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2606.26636},
 }
 ```
 
